@@ -132,17 +132,7 @@ class Transaction(db.Model):
 
     user = db.relationship('User', backref=db.backref('transactions', lazy=True))
 
-class Setting(db.Model):
-    __tablename__ = 'settings'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    setting_name = db.Column(db.String, nullable=False)
-    setting_value = db.Column(db.String, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    user = db.relationship('User', backref=db.backref('settings', lazy=True))
 
 class Asset(db.Model):
     __tablename__ = 'assets'
@@ -175,3 +165,14 @@ class SavingsGoal(db.Model):
     user = db.relationship('User', backref=db.backref('savings_goals', lazy=True))
 
 
+class Setting(db.Model):
+    __tablename__ = 'settings'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    setting_name = db.Column(db.String, nullable=False)
+    setting_value = db.Column(db.String, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('settings', lazy=True))
