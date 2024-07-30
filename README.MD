@@ -25,7 +25,7 @@ requirements.txt: Lists dependencies for easy installation.
     Install the required packages listed in requirements.txt.
 
     ```bash
-    pip install -r requirements.
+    pip install -r requirements.txt
     ```
 
 3. Initialize the Database
