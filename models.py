@@ -144,3 +144,34 @@ class Setting(db.Model):
 
     user = db.relationship('User', backref=db.backref('settings', lazy=True))
 
+class Asset(db.Model):
+    __tablename__ = 'assets'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String, nullable=False)
+    value = db.Column(db.Numeric, nullable=False)
+    purchase_date = db.Column(db.Date, nullable=False)
+    description = db.Column(db.String, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('assets', lazy=True))
+
+class SavingsGoal(db.Model):
+    __tablename__ = 'savings_goals'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String, nullable=False)
+    target_amount = db.Column(db.Numeric, nullable=False)
+    current_amount = db.Column(db.Numeric, nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=True)
+    description = db.Column(db.String, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship('User', backref=db.backref('savings_goals', lazy=True))
+
+
