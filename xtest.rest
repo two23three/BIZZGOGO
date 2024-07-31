@@ -2,20 +2,12 @@ POST http://127.0.0.1:5000/users
 Content-Type: application/json
 
 {
-"name": "john_doe",
-"email": "john_doe@example.com",
+"name": "Tulley",
+"email": "tulley@example.com",
 "password": "secret",
-"phone_number": "23456",
-"role_id":2
+"phone_number": "234567",
+"role_id":2,
+"referral_code": "4adcc19b-fdfc-49d8-92ea-5a9bfa6c2834"
 }
 
-POST http://127.0.0.1:5000/expenses
-Content-Type: application/json
 
-{
-  "user_id": 1,
-  "amount": 100.50,
-  "category_id": 1,
-  "date": "2024-07-31",
-  "description": "Grocery shopping"
-}

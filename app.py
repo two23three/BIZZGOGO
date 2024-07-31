@@ -39,16 +39,9 @@ api.add_resource(ExpenseCategoryResource, '/categories', '/categories/<int:id>')
 def index():
     return "Welcome to BizzGogo!"
 
-def insert_default_roles():
-    if not Role.query.first():
-        role_business = Role(name='Business')
-        role_user = Role(name='User')
-        db.session.add(role_business)
-        db.session.add(role_user)
-        db.session.commit()
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        insert_default_roles()
+        
     app.run(debug=True)

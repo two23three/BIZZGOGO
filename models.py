@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-
+import uuid
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -15,7 +15,8 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
+    referral_code = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
+    referred_by = db.Column(db.String(36), db.ForeignKey('users.referral_code'), nullable=True)
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
 
 class Role(db.Model):
