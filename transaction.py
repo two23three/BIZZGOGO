@@ -77,7 +77,7 @@ class TransactionResource(Resource):
         db.session.commit()
         return {'message': 'Transaction deleted successfully'}
 
-api.add_resource(TransactionResource, '/transactions', '/transactions/<int:id>')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
