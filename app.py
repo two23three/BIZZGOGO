@@ -4,6 +4,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_restful import Api
 from models import db, User, Role, Income, IncomeCategory, Expense, ExpenseCategory, Debt, DebtPayment, FinancialReport, Transaction, Asset, SavingsGoal, Setting
 from user import UserResource
+from income import IncomeResource, IncomeCategoryResource
 from expense import ExpenseResource, ExpenseCategoryResource
 from assets import AssetResource 
 import config
