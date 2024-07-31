@@ -83,6 +83,7 @@ class AssetResource(Resource):
 
         return {'message': 'Asset deleted successfully'}
 
+api.add_resource(AssetResource, '/assets', '/assets/<int:id>')
 
 
 if __name__ == '__main__':

@@ -131,6 +131,9 @@ class ExpenseCategoryResource(Resource):
         db.session.commit()
         
         return {'message': 'Category deleted successfully'}
+    
+api.add_resource(ExpenseResource, '/expenses', '/expenses/<int:id>')
+api.add_resource(ExpenseCategoryResource, '/categories', '/categories/<int:id>')
 
 
 if __name__ == '__main__':
