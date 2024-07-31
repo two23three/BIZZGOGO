@@ -1,0 +1,10 @@
+POST http://127.0.0.1:5000/users
+Content-Type: application/json
+
+{
+"name": "john_doe",
+"email": "john_doe@example.com",
+"password": "secret",
+"phone_number": "23456",
+"role_id":2
+}
