@@ -4,6 +4,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_restful import Api
 from models import db, User, Role, Income, IncomeCategory, Expense, ExpenseCategory, Debt, DebtPayment, FinancialReport, Transaction, Asset, SavingsGoal, Setting
 from user import UserResource
+from expense import ExpenseResource, ExpenseCategoryResource
 import config
 
 app = Flask(__name__)
@@ -31,6 +32,8 @@ admin.add_view(ModelView(Setting, db.session))
 
 # Add UserResource to the API
 api.add_resource(UserResource, '/users', '/users/<int:id>')
+api.add_resource(ExpenseResource, '/expenses', '/expenses/<int:id>')
+api.add_resource(ExpenseCategoryResource, '/categories', '/categories/<int:id>')
 
 @app.route('/')
 def index():

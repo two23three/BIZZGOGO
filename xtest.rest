@@ -8,3 +8,14 @@ Content-Type: application/json
 "phone_number": "23456",
 "role_id":2
 }
+
+POST http://127.0.0.1:5000/expenses
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "amount": 100.50,
+  "category_id": 1,
+  "date": "2024-07-31",
+  "description": "Grocery shopping"
+}
