@@ -2,6 +2,7 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 import uuid
+
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -15,6 +16,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
     referral_code = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
     referred_by = db.Column(db.String(36), db.ForeignKey('users.referral_code'), nullable=True)
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
@@ -48,9 +50,6 @@ class IncomeCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
-    user = db.relationship('User', backref=db.backref('income_categories', lazy=True))
 
 class Expense(db.Model):
     __tablename__ = 'expenses'
@@ -61,6 +60,7 @@ class Expense(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('expense_categories.id'), nullable=False)
     date = db.Column(db.Date, nullable=False)
     description = db.Column(db.String, nullable=True)
+    is_recurring = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -73,9 +73,6 @@ class ExpenseCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
-    user = db.relationship('User', backref=db.backref('expense_categories', lazy=True))
 
 class Debt(db.Model):
     __tablename__ = 'debts'
