@@ -6,6 +6,7 @@ from models import db, User, Role, Income, IncomeCategory, Expense, ExpenseCateg
 from user import UserResource
 from income import IncomeResource, IncomeCategoryResource
 from expense import ExpenseResource, ExpenseCategoryResource
+from assets import AssetResource 
 import config
 
 app = Flask(__name__)
@@ -37,6 +38,7 @@ api.add_resource(IncomeResource, '/incomes', '/incomes/<int:id>')
 api.add_resource(IncomeCategoryResource, '/income_categories', '/income_categories/<int:id>')
 api.add_resource(ExpenseResource, '/expenses', '/expenses/<int:id>')
 api.add_resource(ExpenseCategoryResource, '/categories', '/categories/<int:id>')
+api.add_resource(AssetResource, '/assets', '/assets/<int:id>')
 
 @app.route('/')
 def index():
