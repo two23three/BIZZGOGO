@@ -1,13 +1,9 @@
-POST http://127.0.0.1:5000/users
+POST http://127.0.0.1:5000/user/3/financialreports
 Content-Type: application/json
 
 {
-"name": "Tulley",
-"email": "tulley@example.com",
-"password": "secret",
-"phone_number": "234567",
-"role_id":2,
-"referral_code": "4adcc19b-fdfc-49d8-92ea-5a9bfa6c2834"
+"report_type":"Mpesa",
+"report_data":"Deposits: KES 39,063"
 }
 
 
