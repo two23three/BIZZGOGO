@@ -11,6 +11,8 @@ from assets import AssetResource
 from transaction import TransactionResource
 from savingsGoal import SavingsGoalResource
 from settings import SettingResource
+from debt import DebtResource
+from debtPayment import DebtPaymentResource
 import config
 
 app = Flask(__name__)
@@ -42,6 +44,8 @@ api.add_resource(IncomeResource, '/incomes', '/incomes/<int:id>')
 api.add_resource(IncomeCategoryResource, '/income_categories', '/income_categories/<int:id>')
 api.add_resource(ExpenseResource, '/expenses', '/expenses/<int:id>')
 api.add_resource(ExpenseCategoryResource, '/categories', '/categories/<int:id>')
+api.add_resource(DebtResource, '/debts', '/debts/<int:id>')
+api.add_resource(DebtPaymentResource, '/debt_payments', '/debt_payments/<int:id>')
 api.add_resource(AssetResource, '/assets', '/assets/<int:id>')
 api.add_resource(UsersFinancialReport, '/user/<int:user_id>/financialreports', '/user/<int:user_id>/financialreports/<int:report_id>')
 api.add_resource(TransactionResource, '/transactions', '/transactions/<int:id>')
