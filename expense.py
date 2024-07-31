@@ -4,8 +4,7 @@ from datetime import datetime
 from models import db, Expense, ExpenseCategory
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:newpassword@localhost/mydatabase'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object('config.Config')
 
 db.init_app(app)
 api = Api(app)
