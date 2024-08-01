@@ -22,14 +22,11 @@ class User(db.Model):
     referring_user = db.relationship('User', remote_side=[referral_code], backref=db.backref('referred_users', lazy=True))
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
 
-<<<<<<< HEAD
-=======
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
->>>>>>> 20b072cdc95b64496d3433950b77e407d78d4817
 
 class Role(db.Model):
     __tablename__ = 'roles'
