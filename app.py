@@ -93,7 +93,9 @@ def signup():
     refresh_token = create_refresh_token(identity=new_user.id)
     
     return jsonify({
-        'msg': 'User created successfully'
+        'msg': 'User created successfully',
+        'access_token': access_token,
+        'refresh_token': refresh_token
     }), 201
 
 @app.route('/login', methods=['POST'])
