@@ -3,7 +3,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_restful import Api
 from models import db, User, Role, Income, IncomeCategory, Expense, ExpenseCategory, Debt, DebtPayment, FinancialReport, Transaction, Asset, SavingsGoal, Setting
-from user import UserResource,UsersFinancialReport
+from user import UserResource, UsersFinancialReport
 from views import UserModelView, IncomeModelView, ExpenseModelView, DebtModelView, DebtPaymentModelView, TransactionModelView, AssetModelView, SavingsGoalModelView, SettingModelView
 from income import IncomeResource, IncomeCategoryResource
 from expense import ExpenseResource, ExpenseCategoryResource
@@ -64,7 +64,6 @@ def index():
 def signup():
     data = request.get_json()
     
-    # Validate input data
     if not all(key in data for key in ('name', 'email', 'password', 'role_id')):
         return jsonify({'msg': 'Missing required fields'}), 400
     
@@ -74,14 +73,11 @@ def signup():
     password = data.get('password')
     role_id = data.get('role_id')
     
-    # Check if user already exists
     if User.query.filter_by(email=email).first():
         return jsonify({'msg': 'User already exists'}), 400
     
-    # Hash the password using Flask-Bcrypt
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     
-    # Create a new user
     new_user = User(
         name=name,
         phone_number=phone_number,
@@ -93,13 +89,36 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
     
-    # Create access token
     access_token = create_access_token(identity=new_user.id)
     refresh_token = create_refresh_token(identity=new_user.id)
     
     return jsonify({
         'msg': 'User created successfully'
     }), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    
+    if not all(key in data for key in ('email', 'password')):
+        return jsonify({'msg': 'Missing required fields'}), 400
+    
+    email = data.get('email')
+    password = data.get('password')
+    
+    user = User.query.filter_by(email=email).first()
+    
+    if not user or not bcrypt.check_password_hash(user.password_hash, password):
+        return jsonify({'msg': 'Invalid credentials'}), 401
+    
+    access_token = create_access_token(identity=user.id)
+    refresh_token = create_refresh_token(identity=user.id)
+    
+    return jsonify({
+        'msg': 'Login successful',
+        'access_token': access_token,
+        'refresh_token': refresh_token
+    }), 200
 
 
 
