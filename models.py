@@ -1,4 +1,4 @@
-
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 import uuid
@@ -20,6 +20,12 @@ class User(db.Model):
     referral_code = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
     referred_by = db.Column(db.String(36), db.ForeignKey('users.referral_code'), nullable=True)
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 class Role(db.Model):
     __tablename__ = 'roles'
