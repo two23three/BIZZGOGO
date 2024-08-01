@@ -19,7 +19,9 @@ class User(db.Model):
     
     referral_code = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid.uuid4()))
     referred_by = db.Column(db.String(36), db.ForeignKey('users.referral_code'), nullable=True)
+    referring_user = db.relationship('User', remote_side=[referral_code], backref=db.backref('referred_users', lazy=True))
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
+
 
 class Role(db.Model):
     __tablename__ = 'roles'

@@ -1,5 +1,14 @@
-GET  http://127.0.0.1:5000/user/3/financialreports
+POST  http://0.0.0.0:5000/users
 Content-Type: application/json
+
+
+{
+  "name": "Tulley Mwenda",
+  "email": "tulley@example.com",
+  "password": "password123",
+  "role_id": "3",
+  "referral_code":"joh-dc08"
+}
 
 
 
