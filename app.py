@@ -1,9 +1,9 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_restful import Api
 from models import db, User, Role, Income, IncomeCategory, Expense, ExpenseCategory, Debt, DebtPayment, FinancialReport, Transaction, Asset, SavingsGoal, Setting
-from user import UserResource,UsersFinancialReport
+from user import UserResource, UsersFinancialReport
 from views import UserModelView, IncomeModelView, ExpenseModelView, DebtModelView, DebtPaymentModelView, TransactionModelView, AssetModelView, SavingsGoalModelView, SettingModelView
 from income import IncomeResource, IncomeCategoryResource
 from expense import ExpenseResource, ExpenseCategoryResource
@@ -13,6 +13,8 @@ from savingsGoal import SavingsGoalResource
 from settings import SettingResource
 from debt import DebtResource
 from debtPayment import DebtPaymentResource
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flask_bcrypt import Bcrypt
 import config
 
 app = Flask(__name__)
@@ -22,6 +24,8 @@ app.config.from_object(config.Config)
 db.init_app(app)
 api = Api(app)
 admin = Admin(app, name='MyApp', template_mode='bootstrap3')
+jwt = JWTManager(app)
+bcrypt = Bcrypt(app)
 
 # Add model views to Flask-Admin
 admin.add_view(UserModelView(User, db.session))
@@ -55,6 +59,77 @@ api.add_resource(SettingResource, '/settings', '/settings/<int:id>')
 @app.route('/')
 def index():
     return "Welcome to BizzGogo!"
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    
+    if not all(key in data for key in ('name', 'email', 'password', 'role_id')):
+        return jsonify({'msg': 'Missing required fields'}), 400
+    
+    name = data.get('name')
+    phone_number = data.get('phone_number')
+    email = data.get('email')
+    password = data.get('password')
+    role_id = data.get('role_id')
+    
+    if User.query.filter_by(email=email).first():
+        return jsonify({'msg': 'User already exists'}), 400
+    
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    new_user = User(
+        name=name,
+        phone_number=phone_number,
+        email=email,
+        password_hash=hashed_password,
+        role_id=role_id
+    )
+    
+    db.session.add(new_user)
+    db.session.commit()
+    
+    access_token = create_access_token(identity=new_user.id)
+    refresh_token = create_refresh_token(identity=new_user.id)
+    
+    return jsonify({
+        'msg': 'User created successfully',
+        'access_token': access_token,
+        'refresh_token': refresh_token
+    }), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    
+    if not all(key in data for key in ('password',)):
+        return jsonify({'msg': 'Missing required fields'}), 400
+
+    email = data.get('email')
+    phone_number = data.get('phone_number')
+    password = data.get('password')
+    
+    if not email and not phone_number:
+        return jsonify({'msg': 'Missing email or phone number'}), 400
+
+    user = None
+    if email:
+        user = User.query.filter_by(email=email).first()
+    if phone_number:
+        user = User.query.filter_by(phone_number=phone_number).first()
+    
+    if not user or not bcrypt.check_password_hash(user.password_hash, password):
+        return jsonify({'msg': 'Invalid credentials'}), 401
+    
+    access_token = create_access_token(identity=user.id)
+    refresh_token = create_refresh_token(identity=user.id)
+    
+    return jsonify({
+        'msg': 'Login successful',
+        'access_token': access_token,
+        'refresh_token': refresh_token
+    }), 200
+
 
 
 if __name__ == '__main__':
