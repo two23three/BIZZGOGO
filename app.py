@@ -102,13 +102,21 @@ def signup():
 def login():
     data = request.get_json()
     
-    if not all(key in data for key in ('email', 'password')):
+    if not all(key in data for key in ('password',)):
         return jsonify({'msg': 'Missing required fields'}), 400
-    
+
     email = data.get('email')
+    phone_number = data.get('phone_number')
     password = data.get('password')
     
-    user = User.query.filter_by(email=email).first()
+    if not email and not phone_number:
+        return jsonify({'msg': 'Missing email or phone number'}), 400
+
+    user = None
+    if email:
+        user = User.query.filter_by(email=email).first()
+    if phone_number:
+        user = User.query.filter_by(phone_number=phone_number).first()
     
     if not user or not bcrypt.check_password_hash(user.password_hash, password):
         return jsonify({'msg': 'Invalid credentials'}), 401
