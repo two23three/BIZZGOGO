@@ -20,6 +20,7 @@ import uuid
 
 from flask_bcrypt import Bcrypt
 import config
+import re
 
 app = Flask(__name__)
 app.config.from_object(config.Config)
@@ -61,6 +62,10 @@ api.add_resource(TransactionResource, '/transactions', '/transactions/<int:id>')
 api.add_resource(SavingsGoalResource, '/savings', '/savings/<int:id>')
 api.add_resource(SettingResource, '/settings', '/settings/<int:id>')
 
+# Define validation patterns
+email_pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
+kenyan_phone_pattern = re.compile(r"^(?:\+254|0)[71]\d{8}$")
+
 @app.route('/')
 def index():
     return "Welcome to BizzGogo!"
@@ -82,7 +87,11 @@ def signup():
     if User.query.filter_by(email=email).first():
         return jsonify({'msg': 'User already exists'}), 400
     
-    hashed_password = generate_password_hash(password)
+    if not email_pattern.match(email):
+        return jsonify({'msg': 'Invalid email format'}), 400
+
+    if phone_number and not kenyan_phone_pattern.match(phone_number):
+        return jsonify({'msg': 'Invalid phone number format'}), 400
     
     # Check if referral code exists and is valid
     referred_by_user = None
@@ -93,6 +102,8 @@ def signup():
     
     # Generate a unique referral code for the new user
     new_user_referral_code = f"{name[:3]}-{str(uuid.uuid4())[:4]}"
+    
+    hashed_password = generate_password_hash(password)
     
     new_user = User(
         name=name,
@@ -130,6 +141,12 @@ def login():
     if not email and not phone_number:
         return jsonify({'msg': 'Missing email or phone number'}), 400
 
+    if email and not email_pattern.match(email):
+        return jsonify({'msg': 'Invalid email format'}), 400
+
+    if phone_number and not kenyan_phone_pattern.match(phone_number):
+        return jsonify({'msg': 'Invalid phone number format'}), 400
+
     user = None
     if email:
         user = User.query.filter_by(email=email).first()
@@ -147,6 +164,8 @@ def login():
         'access_token': access_token,
         'refresh_token': refresh_token
     }), 200
+
+
 
 if __name__ == '__main__':
     with app.app_context():
