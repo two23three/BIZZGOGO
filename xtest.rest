@@ -1,13 +1,14 @@
-POST  http://0.0.0.0:5000/users
+POST https://bizzgogo-70f9.onrender.com/savings
 Content-Type: application/json
 
-
 {
-  "name": "Tulley Mwenda",
-  "email": "tulley@example.com",
-  "password": "password123",
-  "role_id": "3",
-  "referral_code":"joh-dc08"
+  "user_id":"5",
+  "name":"Mombasa Holiday",
+  "target_amount":100000,
+  "current_amount":1000,
+  "start_date":"2-20-2023",
+  "end_date":"6-20-2023",
+  "description":"A mombasa beach holiday"
 }
 
 

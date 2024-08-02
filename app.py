@@ -14,6 +14,9 @@ from settings import SettingResource
 from debt import DebtResource
 from debtPayment import DebtPaymentResource
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+
 from flask_bcrypt import Bcrypt
 import config
 
@@ -72,18 +75,31 @@ def signup():
     email = data.get('email')
     password = data.get('password')
     role_id = data.get('role_id')
+    referral_code = data.get('referral_code')
     
     if User.query.filter_by(email=email).first():
         return jsonify({'msg': 'User already exists'}), 400
     
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    hashed_password = generate_password_hash(password)
+    
+    # Check if referral code exists and is valid
+    referred_by_user = None
+    if referral_code:
+        referred_by_user = User.query.filter_by(referral_code=referral_code).first()
+        if not referred_by_user:
+            return jsonify({'msg': 'Invalid referral code'}), 400
+    
+    # Generate a unique referral code for the new user
+    new_user_referral_code = f"{name[:3]}-{str(uuid.uuid4())[:4]}"
     
     new_user = User(
         name=name,
         phone_number=phone_number,
         email=email,
         password_hash=hashed_password,
-        role_id=role_id
+        role_id=role_id,
+        referral_code=new_user_referral_code,
+        referred_by=referred_by_user.referral_code if referred_by_user else None
     )
     
     db.session.add(new_user)
@@ -118,7 +134,7 @@ def login():
     if phone_number:
         user = User.query.filter_by(phone_number=phone_number).first()
     
-    if not user or not bcrypt.check_password_hash(user.password_hash, password):
+    if not user or not check_password_hash(user.password_hash, password):
         return jsonify({'msg': 'Invalid credentials'}), 401
     
     access_token = create_access_token(identity=user.id)
@@ -129,8 +145,6 @@ def login():
         'access_token': access_token,
         'refresh_token': refresh_token
     }), 200
-
-
 
 if __name__ == '__main__':
     with app.app_context():

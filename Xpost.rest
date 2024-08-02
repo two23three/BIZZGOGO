@@ -1,0 +1,11 @@
+POST https://bizzgogo-70f9.onrender.com/signup
+Content-Type: application/json
+
+{
+"name":"Tulley Mwenda",
+"phone_number":"0701584681",
+"email":"tulley@gmail.com",
+"password":"12345",
+"role_id":1,
+"referral_code":"Max-29aa"
+}
