@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_restful import Api
+from flask_cors import CORS  
 from models import db, User, Role, Income, IncomeCategory, Expense, ExpenseCategory, Debt, DebtPayment, FinancialReport, Transaction, Asset, SavingsGoal, Setting
 from user import UserResource, UsersFinancialReport
 from views import UserModelView, IncomeModelView, ExpenseModelView, DebtModelView, DebtPaymentModelView, TransactionModelView, AssetModelView, SavingsGoalModelView, SettingModelView
@@ -29,6 +30,7 @@ api = Api(app)
 admin = Admin(app, name='MyApp', template_mode='bootstrap3')
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
+CORS(app)  
 
 # Add model views to Flask-Admin
 admin.add_view(UserModelView(User, db.session))
